@@ -6,9 +6,9 @@ def drawHouse(t, length):
 	for i in range(4):
 		t.forward(length)
 		t.right(90)
-	t.end_fill()	
+	t.end_fill()
 	t.color("black")
-	t.begin_fill()	
+	t.begin_fill()
 	t.left(45)
 	t.forward(length/(2)**(1/2))
 	t.right(90)
