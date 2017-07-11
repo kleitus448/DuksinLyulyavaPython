@@ -2,10 +2,11 @@ import pygame
 import random
 
 W, H = 640, 480
-Vel = 3,3
+Vel = 1, 1
 pygame.init()
 display = pygame.display.set_mode((W,H))
 screen = display.copy()
+pygame.time.set_timer(pygame.USEREVENT + 1, 50)
 BLACK = pygame.Color("black")
 
 def CreateSquare(Size, Cords):
@@ -13,52 +14,47 @@ def CreateSquare(Size, Cords):
     Square = pygame.Rect(*Cords, Size, Size)
     print(Square)
     return Square, SCol
-    '''SCarry = False
-    while 1:
-        e = pygame.event.wait()
-        if e.type == pygame.QUIT or e.type == pygame.KEYUP and e.key == 27:
-            break
-        elif e.type == pygame.MOUSEBUTTONDOWN and e.button == 1 :
-            if Square.collidepoint(e.pos):
+
+def SquareMotion(SCarry, NSquare):
+    e = pygame.event.poll()
+    if e.type == pygame.USEREVENT+1:
+        screen.fill(BLACK)
+        for i in range(Count):
+            pygame.draw.rect(screen, SquareC[i], SquareS[i])
+            SquareS[i] = SquareS[i].move(Vel)
+    #elif e.type == pygame.QUIT or e.type == pygame.KEYUP and e.key == 27:
+    elif e.type == pygame.MOUSEBUTTONDOWN and e.button == 1 :
+        for i in range(Count):
+            if SquareS[i].collidepoint(e.pos):
                 SCarry = True
                 print("Понесли квадрат")
-            #Понесли квадрат
-            print()
-        elif e.type == pygame.MOUSEBUTTONUP and e.button == 1 :
-            if SCarry:
-                SCarry = False
-                Square.center = e.pos
-                print("Перенесли в", Square.center)
-            #Понесли квадрат
-            print()
-        elif e.type == pygame.MOUSEMOTION and e.buttons[0]:
-            if SCarry:
-                Square.center = e.pos
-        else:
-            print(e)
-        screen.fill(BLACK)
-        pygame.draw.rect(screen, SCol, Square) 
-        display.blit(screen, (0, 0))
-        pygame.display.flip()'''
+                NSquare = i
+                #Понесли квадрат
+    elif e.type == pygame.MOUSEBUTTONUP and e.button == 1 :
+        if SCarry:
+            SCarry = False
+            SquareS[NSquare].center = e.pos
+            #print("Перенесли в", Square.center)
+    elif e.type == pygame.MOUSEMOTION and e.buttons[0]:
+        if SCarry:
+            SquareS[NSquare].center = e.pos
+    return SCarry, NSquare
 
-def SquareMovement(Square, SCol): 
-    pygame.draw.rect(screen, SCol, Square)
-    Square = Square.move(Vel)
-    pygame.display.flip() 
-    
 
-screen.fill(BLACK)        
 Count = int(input())
-SquareS = []
+SquareS, SquareC = [], []
+q = 1
+SCarry = False
+NSquare = 0
 
-for i in range(Count): 
+for i in range(Count):
     r = random.randint(0,255)
-    SquareS += [CreateSquare(r, (random.randint(0,255), random.randint(0,255)))]
-    print(SquareS[i])
+    x = CreateSquare(r, (random.randint(0,255), random.randint(0,255)))
+    SquareS += [""]
+    SquareC += [""]
+    SquareS[i], SquareC[i] = x
 
 while True:
-    print('Cicl')
-    screen.fill(BLACK)
-    SquareMovement(*SquareS[0])
+    SCarry, NSquare = SquareMotion(SCarry, NSquare)
     display.blit(screen, (1, 1))
-    e = pygame.event.wait()
+    pygame.display.flip()

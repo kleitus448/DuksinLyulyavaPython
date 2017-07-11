@@ -1,13 +1,13 @@
 import pygame
 import random
 W, H = 640, 480
-SW, SH = 30, 30
+SW, SH = 100, 100
 pygame.init()
 display = pygame.display.set_mode((W,H))
 screen = display.copy()
 SCol = pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
 Square = pygame.Rect(W//2-SW//2,H//2-SH//2,SW,SH)
-Vel = 1,1
+Vel = 3,3
 pygame.time.set_timer(pygame.USEREVENT + 1, 100)
 BLACK = pygame.Color("black")
 SCarry = False
@@ -16,6 +16,7 @@ while 1:
     if e.type == pygame.QUIT or e.type == pygame.KEYUP and e.key == 27:
         break
     elif e.type == pygame.MOUSEBUTTONDOWN and e.button == 1 :
+        print(e.button)
         if Square.collidepoint(e.pos):
             SCarry = True
             print("Понесли квадрат")
@@ -36,10 +37,8 @@ while 1:
             Square = Square.move(Vel)
     else:
         print(e)
-    Square = Square.move(Vel)
+    #Square = Square.move(Vel)
     screen.fill(BLACK)
-    pygame.draw.rect(screen, SCol, Square) 
+    pygame.draw.rect(screen, SCol, Square)
     display.blit(screen, (0, 0))
     pygame.display.flip()
-
-
